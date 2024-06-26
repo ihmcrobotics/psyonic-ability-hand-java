@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class AbilityHandExample
 {
-   private static final Random RANDOM = new Random(298378);
+   private static final Random RANDOM = new Random();
    private static volatile boolean running = true;
 
    public static void main(String[] args) throws InterruptedException
