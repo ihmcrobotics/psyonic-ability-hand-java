@@ -21,18 +21,28 @@ public class AbilityHandIndividualExample {
             running = false;
             bleManager.disconnect();
         }));
+        AbilityHandIndividualFingerControlCommand individualCommand = new AbilityHandIndividualFingerControlCommand();
+        individualCommand.setIndexPosition(0);
+        individualCommand.setMiddlePosition(0);
+        individualCommand.setRingPosition(0);
+        individualCommand.setPinkyPosition(0);
+        bleManager.sendIndividualCommand(handAddress, individualCommand);
+        individualCommand.setIndexPeriod(0.0F);
+        individualCommand.setMiddlePeriod(0.0F);
+        individualCommand.setRingPeriod(0.0F);
+        individualCommand.setPinkyPeriod(0.0F);
         while(running)
         {
-            AbilityHandIndividualFingerControlCommand individualCommand = new AbilityHandIndividualFingerControlCommand();
-            individualCommand.setIndexPeriod(0);
-            individualCommand.setIndexPosition(RANDOM.nextInt(60));
-            individualCommand.setMiddlePosition(RANDOM.nextInt(60));
-            individualCommand.setRingPosition(RANDOM.nextInt(60));
-            individualCommand.setPinkyPosition(RANDOM.nextInt(60));
-            individualCommand.setThumbFlexorPosition(RANDOM.nextInt(60));
-            individualCommand.setThumbRotatorPosition(-RANDOM.nextInt(60));
-            bleManager.sendIndividualCommand(handAddress, individualCommand);
-            Thread.sleep(50);
+            for(int i = 0; i < 90; i++)
+            {
+                individualCommand.setIndexPosition((float) Math.abs(60 * Math.sin(i)));
+                individualCommand.setMiddlePosition((float) Math.abs(60 * Math.cos(i)));
+                individualCommand.setRingPosition((float) Math.abs(60 * Math.sin(i)));
+                individualCommand.setPinkyPosition((float) Math.abs(60 * Math.cos(i)));
+                bleManager.sendIndividualCommand(handAddress, individualCommand);
+                Thread.sleep(100);
+            }
+            Thread.sleep(250);
         }
     }
 }

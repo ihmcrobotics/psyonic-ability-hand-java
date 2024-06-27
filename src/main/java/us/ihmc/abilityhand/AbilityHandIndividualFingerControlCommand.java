@@ -14,18 +14,18 @@ public class AbilityHandIndividualFingerControlCommand {
    //Position is set as an angle of the finger with respect to the palm
    //Period is how fast the hand gets to that angle, the lower the period the faster
    //Thumb Rotator goes inward the more negative the number
-   private int indexPosition = 5;
-   private int indexPeriod = 0;
-   private int middlePosition = 5;
-   private int middlePeriod = 0;
-   private int ringPosition = 5;
-   private int ringPeriod = 0;
-   private int pinkyPosition = 5;
-   private int pinkyPeriod = 0;
-   private int thumbFlexorPosition = 5;
-   private int thumbFlexorPeriod = 0;
-   private int thumbRotatorPosition = 50;
-   private int thumbRotatorPeriod = 0;
+   private float indexPosition = 5;
+   private float  indexPeriod = 0;
+   private float middlePosition = 5;
+   private float  middlePeriod = 0;
+   private float ringPosition = 5;
+   private float  ringPeriod = 0;
+   private float pinkyPosition = 5;
+   private float  pinkyPeriod = 0;
+   private float thumbFlexorPosition = 5;
+   private float  thumbFlexorPeriod = 0;
+   private float thumbRotatorPosition = 50;
+   private float  thumbRotatorPeriod = 0;
 
 
    // TODO:
@@ -56,51 +56,51 @@ public class AbilityHandIndividualFingerControlCommand {
 
       return buffer.array();
    }
-   public void setIndexPosition(int indexPosition)
+   public void setIndexPosition(float indexPosition)
    {
       this.indexPosition = indexPosition;
    }
-   public void setIndexPeriod(int indexPeriod)
+   public void setIndexPeriod(float indexPeriod)
    {
       this.indexPeriod = indexPeriod;
    }
-   public void setMiddlePosition(int middlePosition)
+   public void setMiddlePosition(float middlePosition)
    {
       this.middlePosition = middlePosition;
    }
-   public void setMiddlePeriod(int middlePeriod)
+   public void setMiddlePeriod(float middlePeriod)
    {
       this.middlePeriod = middlePeriod;
    }
-   public void setRingPosition(int ringPosition)
+   public void setRingPosition(float ringPosition)
    {
       this.ringPosition = ringPosition;
    }
-   public void setRingPeriod(int ringPeriod)
+   public void setRingPeriod(float ringPeriod)
    {
       this.ringPeriod = ringPeriod;
    }
-   public void setPinkyPosition(int pinkyPosition)
+   public void setPinkyPosition(float pinkyPosition)
    {
       this.pinkyPosition = pinkyPosition;
    }
-   public void setPinkyPeriod(int pinkyPeriod)
+   public void setPinkyPeriod(float pinkyPeriod)
    {
       this.pinkyPeriod = pinkyPeriod;
    }
-   public void setThumbFlexorPosition(int thumbFlexorPosition)
+   public void setThumbFlexorPosition(float thumbFlexorPosition)
    {
       this.thumbFlexorPosition = thumbFlexorPosition;
    }
-   public void setThumbFlexorPeriod(int thumbFlexorPeriod)
+   public void setThumbFlexorPeriod(float thumbFlexorPeriod)
    {
-      this.thumbFlexorPosition = thumbFlexorPeriod;
+      this.thumbFlexorPeriod = thumbFlexorPeriod;
    }
-   public void setThumbRotatorPosition(int thumbRotatorPosition)
+   public void setThumbRotatorPosition(float thumbRotatorPosition)
    {
       this.thumbRotatorPosition = thumbRotatorPosition;
    }
-   public void setThumbRotatorPeriod(int thumbRotatorPeriod)
+   public void setThumbRotatorPeriod(float thumbRotatorPeriod)
    {
       this.thumbRotatorPeriod = thumbRotatorPeriod;
    }
