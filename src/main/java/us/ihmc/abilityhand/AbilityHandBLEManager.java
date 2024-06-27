@@ -74,6 +74,13 @@ public class AbilityHandBLEManager
                                      WriteType.WITHOUT_RESPONSE);
    }
 
+   public void sendIndividualCommand(String handAddress, AbilityHandIndividualFingerControlCommand individualCommand){
+      BluetoothPeripheral peripheral = bluetoothCentralManager.getPeripheral(handAddress);
+      peripheral.writeCharacteristic(BLEUUID.ABILITY_HAND_SERVICE_ID,
+              BLEUUID.ABILITY_HAND_TX_CHARACTERISTIC_ID,
+              individualCommand.getAsciiSequence(),
+              WriteType.WITHOUT_RESPONSE);
+   }
    public void sendLegacyGripCommand(String handAddress, AbilityHandLegacyGripCommand legacyGripCommand)
    {
       BluetoothPeripheral peripheral = bluetoothCentralManager.getPeripheral(handAddress);
