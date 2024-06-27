@@ -13,6 +13,7 @@ public class AbilityHandIndividualFingerControlCommand {
 
    //Position is set as an angle of the finger with respect to the palm
    //Period is how fast the hand gets to that angle, the lower the period the faster
+   //Thumb Rotator goes inward the more negative the number
    private static int indexPosition = 5;
    private int indexPeriod = 0;
    private int middlePosition = 5;
@@ -21,9 +22,9 @@ public class AbilityHandIndividualFingerControlCommand {
    private int ringPeriod = 0;
    private static int pinkyPosition = 5;
    private int pinkyPeriod = 0;
-   private int thumbFlexorPosition = 5;
+   private static int thumbFlexorPosition = 5;
    private int thumbFlexorPeriod = 0;
-   private int thumbRotatorPosition = 5;
+   private static int thumbRotatorPosition = 50;
    private int thumbRotatorPeriod = 0;
 
 
@@ -54,21 +55,5 @@ public class AbilityHandIndividualFingerControlCommand {
       buffer.putShort((short) ((thumbRotatorPeriod * 0xFFFF) / 300.0));
 
       return buffer.array();
-   }
-   public static void main(String[] args) throws InterruptedException {
-      String handAddress = "DE:76:4F:34:6F:E1";
-
-      AbilityHandBLEManager bleManager = new AbilityHandBLEManager(new String[] {handAddress});
-
-      bleManager.connect();
-
-      Runtime.getRuntime().addShutdownHook(new Thread(() ->
-      {
-         bleManager.disconnect();
-      }));
-
-         AbilityHandIndividualFingerControlCommand individualCommand = new AbilityHandIndividualFingerControlCommand();
-         bleManager.sendIndividualCommand(handAddress, individualCommand);
-         Thread.sleep(50);
    }
 }
