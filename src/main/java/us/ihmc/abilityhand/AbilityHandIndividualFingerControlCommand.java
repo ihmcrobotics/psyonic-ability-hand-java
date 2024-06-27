@@ -14,17 +14,17 @@ public class AbilityHandIndividualFingerControlCommand {
    //Position is set as an angle of the finger with respect to the palm
    //Period is how fast the hand gets to that angle, the lower the period the faster
    //Thumb Rotator goes inward the more negative the number
-   private static int indexPosition = 5;
+   private int indexPosition = 5;
    private int indexPeriod = 0;
    private int middlePosition = 5;
    private int middlePeriod = 0;
-   private static int ringPosition = 5;
+   private int ringPosition = 5;
    private int ringPeriod = 0;
-   private static int pinkyPosition = 5;
+   private int pinkyPosition = 5;
    private int pinkyPeriod = 0;
-   private static int thumbFlexorPosition = 5;
+   private int thumbFlexorPosition = 5;
    private int thumbFlexorPeriod = 0;
-   private static int thumbRotatorPosition = 50;
+   private int thumbRotatorPosition = 50;
    private int thumbRotatorPeriod = 0;
 
 
@@ -55,5 +55,53 @@ public class AbilityHandIndividualFingerControlCommand {
       buffer.putShort((short) ((thumbRotatorPeriod * 0xFFFF) / 300.0));
 
       return buffer.array();
+   }
+   public void setIndexPosition(int indexPosition)
+   {
+      this.indexPosition = indexPosition;
+   }
+   public void setIndexPeriod(int indexPeriod)
+   {
+      this.indexPeriod = indexPeriod;
+   }
+   public void setMiddlePosition(int middlePosition)
+   {
+      this.middlePosition = middlePosition;
+   }
+   public void setMiddlePeriod(int middlePeriod)
+   {
+      this.middlePeriod = middlePeriod;
+   }
+   public void setRingPosition(int ringPosition)
+   {
+      this.ringPosition = ringPosition;
+   }
+   public void setRingPeriod(int ringPeriod)
+   {
+      this.ringPeriod = ringPeriod;
+   }
+   public void setPinkyPosition(int pinkyPosition)
+   {
+      this.pinkyPosition = pinkyPosition;
+   }
+   public void setPinkyPeriod(int pinkyPeriod)
+   {
+      this.pinkyPeriod = pinkyPeriod;
+   }
+   public void setThumbFlexorPosition(int thumbFlexorPosition)
+   {
+      this.thumbFlexorPosition = thumbFlexorPosition;
+   }
+   public void setThumbFlexorPeriod(int thumbFlexorPeriod)
+   {
+      this.thumbFlexorPosition = thumbFlexorPeriod;
+   }
+   public void setThumbRotatorPosition(int thumbRotatorPosition)
+   {
+      this.thumbRotatorPosition = thumbRotatorPosition;
+   }
+   public void setThumbRotatorPeriod(int thumbRotatorPeriod)
+   {
+      this.thumbRotatorPeriod = thumbRotatorPeriod;
    }
 }
