@@ -25,7 +25,7 @@ public class AbilityHandIndividualFingerControlCommand
    private float pinkyPeriod = 0;
    private float thumbFlexorPosition = 5;
    private float thumbFlexorPeriod = 0;
-   private float thumbRotatorPosition = 50;
+   private float thumbRotatorPosition = -5;
    private float thumbRotatorPeriod = 0;
 
    public byte[] getAsciiSequence()

@@ -36,12 +36,12 @@ public class AbilityHandIndividualExample
       {
          for (int i = 0; i < 90; i++)
          {
-            individualCommand.setIndexPosition((float) Math.abs(60 * Math.sin(i)));
-            individualCommand.setMiddlePosition((float) Math.abs(60 * Math.cos(i)));
-            individualCommand.setRingPosition((float) Math.abs(60 * Math.sin(i)));
-            individualCommand.setPinkyPosition((float) Math.abs(60 * Math.cos(i)));
+            individualCommand.setIndexPosition((float) Math.abs(65 * Math.sin(Math.toRadians(i))));
+            individualCommand.setMiddlePosition((float) Math.abs(65 * Math.cos(Math.toRadians(i))));
+            individualCommand.setRingPosition((float) Math.abs(65 * Math.sin(Math.toRadians(i))));
+            individualCommand.setPinkyPosition((float) Math.abs(65 * Math.cos(Math.toRadians(i))));
             bleManager.sendIndividualCommand(handAddress, individualCommand);
-            Thread.sleep(100);
+            Thread.sleep(10);
          }
          Thread.sleep(250);
       }
