@@ -115,29 +115,4 @@ public class AbilityHandIndividualFingerControlCommand
    {
       this.thumbRotatorPeriod = thumbRotatorPeriod;
    }
-
-   public float getIndexPosition()
-   {
-      return indexPosition;
-   }
-   public float getMiddlePosition()
-   {
-      return middlePosition;
-   }
-   public float getRingPosition()
-   {
-      return ringPosition;
-   }
-   public float getPinkyPosition()
-   {
-      return pinkyPosition;
-   }
-   public float getThumbFlexorPosition()
-   {
-      return thumbFlexorPosition;
-   }
-   public float getThumbRotatorPosition()
-   {
-      return thumbRotatorPosition;
-   }
 }
