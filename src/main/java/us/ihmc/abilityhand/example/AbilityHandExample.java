@@ -14,9 +14,9 @@ public class AbilityHandExample
 
    public static void main(String[] args) throws InterruptedException
    {
-      String handAddress = "DE:76:4F:34:6F:E1";
+      String[] handAddresses = new String[] {"DE:76:4F:34:6F:E1", "F9:C8:0F:A7:A4:D5"};
 
-      AbilityHandBLEManager bleManager = new AbilityHandBLEManager(new String[] {handAddress});
+      AbilityHandBLEManager bleManager = new AbilityHandBLEManager(handAddresses);
 
       bleManager.connect();
 
@@ -28,11 +28,14 @@ public class AbilityHandExample
 
       while (running)
       {
-          AbilityHandLegacyGripCommand gripCommand = getRandomGripCommand();
+         AbilityHandLegacyGripCommand gripCommand = getRandomGripCommand();
 
          System.out.println("Sending " + gripCommand);
 
-         bleManager.sendLegacyGripCommand(handAddress, gripCommand);
+         for (String handAddress : handAddresses) {
+            bleManager.sendLegacyGripCommand(handAddress, gripCommand);
+            Thread.sleep(100);
+         }
 
          Thread.sleep(5000);
       }
