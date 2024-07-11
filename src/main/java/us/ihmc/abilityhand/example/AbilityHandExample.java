@@ -23,7 +23,14 @@ public class AbilityHandExample
       Runtime.getRuntime().addShutdownHook(new Thread(() ->
       {
          running = false;
-         bleManager.disconnect();
+         try
+         {
+            bleManager.disconnect();
+         }
+         catch (InterruptedException e)
+         {
+            e.printStackTrace();
+         }
       }));
 
       while (running)
@@ -32,7 +39,8 @@ public class AbilityHandExample
 
          System.out.println("Sending " + gripCommand);
 
-         for (String handAddress : handAddresses) {
+         for (String handAddress : handAddresses)
+         {
             bleManager.sendLegacyGripCommand(handAddress, gripCommand);
             Thread.sleep(100);
          }

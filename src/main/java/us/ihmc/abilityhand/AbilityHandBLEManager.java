@@ -1,33 +1,27 @@
 package us.ihmc.abilityhand;
 
-import com.welie.blessed.BluetoothCentralManager;
-import com.welie.blessed.BluetoothCentralManagerCallback;
-import com.welie.blessed.BluetoothGattCharacteristic.WriteType;
-import com.welie.blessed.BluetoothPeripheral;
-import com.welie.blessed.BluetoothPeripheralCallback;
+import com.sun.jna.Pointer;
+import us.ihmc.abilityhand.ble.SimpleBLE;
+import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble;
+import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble.uuid_t.ByValue;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.welie.blessed.BluetoothCentralManager.SCANOPTION_NO_NULL_NAMES;
-
-public class AbilityHandBLEManager
+public class AbilityHandBLEManager extends Thread
 {
+   private final SimpleBLE simpleBLE = new SimpleBLE();
    private final String[] handAddresses;
-   private final BluetoothCentralManager bluetoothCentralManager;
+   private final Pointer[] handPeripheralPointers;
    private final Queue<QueuedWriteSequence> writeSequenceQueue = new LinkedList<>();
    private final Lock lock = new ReentrantLock();
    private final Condition notEmpty = lock.newCondition();
 
-   private volatile boolean writeThreadRunning;
+   private volatile boolean running;
 
    private static class QueuedWriteSequence
    {
@@ -38,95 +32,104 @@ public class AbilityHandBLEManager
    public AbilityHandBLEManager(String[] handAddresses)
    {
       this.handAddresses = handAddresses;
+      this.handPeripheralPointers = new Pointer[handAddresses.length];
 
-      bluetoothCentralManager = new BluetoothCentralManager(new BluetoothCentralManagerCallback()
-      {
-      }, new HashSet<>(Collections.singleton(SCANOPTION_NO_NULL_NAMES)));
+      running = true;
 
-      Thread writeThread = new Thread(() ->
+      start();
+   }
+
+   private void consume() throws InterruptedException
+   {
+      Thread.sleep(20);
+
+      lock.lock();
+
+      while (writeSequenceQueue.isEmpty())
       {
-         while (writeThreadRunning)
+         notEmpty.await();
+      }
+
+      QueuedWriteSequence writeSequence = writeSequenceQueue.poll();
+
+      Pointer handPeripheralPointer = getHandPeripheralPointer(writeSequence.handAddress);
+      byte[] data = writeSequence.sequence;
+      libsimpleble.size_t dataLength = new libsimpleble.size_t(data.length);
+      ByValue serviceID = new ByValue();
+      writeUUID(serviceID, BLEUUID.ABILITY_HAND_SERVICE_ID);
+      ByValue characteristicID = new ByValue();
+      writeUUID(characteristicID, BLEUUID.ABILITY_HAND_TX_CHARACTERISTIC_ID);
+
+      simpleBLE.writeCommand(handPeripheralPointer, data, dataLength, serviceID, characteristicID);
+
+      lock.unlock();
+   }
+
+   @Override
+   public void run()
+   {
+      while (running)
+      {
+         try
          {
-            try
-            {
-               Thread.sleep(20);
-            }
-            catch (InterruptedException e)
-            {
-               e.printStackTrace();
-            }
-
-            lock.lock();
-
-            while (writeSequenceQueue.isEmpty())
-            {
-               try
-               {
-                  notEmpty.await();
-               }
-               catch (InterruptedException e)
-               {
-                  e.printStackTrace();
-               }
-            }
-
-            QueuedWriteSequence writeSequence = writeSequenceQueue.poll();
-
-            BluetoothPeripheral peripheral = bluetoothCentralManager.getPeripheral(writeSequence.handAddress);
-            peripheral.writeCharacteristic(BLEUUID.ABILITY_HAND_SERVICE_ID,
-                                           BLEUUID.ABILITY_HAND_TX_CHARACTERISTIC_ID,
-                                           writeSequence.sequence,
-                                           WriteType.WITHOUT_RESPONSE);
-
-            lock.unlock();
+            consume();
          }
-      }, getClass().getSimpleName() + "WriteThread");
-
-      writeThreadRunning = true;
-
-      writeThread.start();
+         catch (InterruptedException e)
+         {
+            e.printStackTrace();
+         }
+      }
    }
 
    public void connect() throws InterruptedException
    {
-      bluetoothCentralManager.adapterOn();
+      // TODO: turn adapter on
 
-      bluetoothCtlScan(true, 3);
+      Pointer adapterPointer = simpleBLE.getAdapterHandle(0);
 
-      bluetoothCentralManager.stopScan();
+      simpleBLE.scanStart(adapterPointer);
 
-      for (String handAddress : handAddresses)
+      Thread.sleep(2000);
+
+      simpleBLE.scanStop(adapterPointer);
+
+      int peripheralCount = simpleBLE.getScanResultsCount(adapterPointer);
+
+      for (int i = 0; i < peripheralCount; i++)
       {
-         BluetoothPeripheral peripheral = bluetoothCentralManager.getPeripheral(handAddress);
+         Pointer peripheralPointer = simpleBLE.getPeripheralHandle(adapterPointer, i);
 
-         while (!bluetoothCentralManager.getConnectedPeripherals().contains(peripheral))
+         String address = simpleBLE.getPeripheralAddress(peripheralPointer);
+
+         for (int j = 0; j < handAddresses.length; j++)
          {
-            if (peripheral.getDevice() != null && peripheral.getDevice().isConnected())
-               break;
-
-            bluetoothCentralManager.connectPeripheral(peripheral, new BluetoothPeripheralCallback()
+            if (handAddresses[j].equals(address))
             {
-            });
+               handPeripheralPointers[j] = peripheralPointer;
 
-            Thread.sleep(1000);
+               simpleBLE.connectToPeripheral(peripheralPointer);
+
+               Thread.sleep(100);
+            }
          }
       }
    }
 
-   public void disconnect()
+   public void disconnect() throws InterruptedException
    {
-      writeThreadRunning = false;
-
-      bluetoothCentralManager.stopScan();
-
-      for (String handAddress : handAddresses)
+      for (int i = 0; i < handAddresses.length; i++)
       {
-         BluetoothPeripheral peripheral = bluetoothCentralManager.getPeripheral(handAddress);
+         Pointer handPeripheralPointer = handPeripheralPointers[i];
 
-         peripheral.cancelConnection();
+         if (handPeripheralPointer != null)
+         {
+            simpleBLE.peripheralDisconnect(handPeripheralPointer);
 
-         bluetoothCentralManager.removeBond(handAddress);
+            Thread.sleep(100);
+         }
       }
+
+      running = false;
    }
 
    public void sendGripCommand(String handAddress, AbilityHandGripCommand gripCommand)
@@ -162,32 +165,31 @@ public class AbilityHandBLEManager
       lock.unlock();
    }
 
-   // Blocking
-   private static void bluetoothCtlScan(boolean on, int durationSeconds)
+   public Pointer getHandPeripheralPointer(String handAddress)
    {
-      try
+      int index = -1;
+
+      for (int i = 0; i < handAddresses.length; i++)
       {
-         long startTimeMillis = System.currentTimeMillis();
-
-         ProcessBuilder processBuilder = new ProcessBuilder("bluetoothctl", "scan", on ? "on" : "off");
-
-         Process process = processBuilder.start();
-
-         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-         while (reader.readLine() != null)
+         if (handAddresses[i].equals(handAddress))
          {
-            if (System.currentTimeMillis() - startTimeMillis > (durationSeconds * 1000L))
-            {
-               process.destroyForcibly();
-               Thread.sleep(100);
-               break;
-            }
+            index = i;
+            break;
          }
-         process.waitFor();
       }
-      catch (IOException | InterruptedException e)
+
+      return handPeripheralPointers[index];
+   }
+
+   private static void writeUUID(ByValue uuidByValue, UUID uuid)
+   {
+      String uuidString = uuid.toString();
+
+      for (int i = 0; i < uuidString.toCharArray().length; i++)
       {
-         e.printStackTrace();
+         uuidByValue.value[i] = (byte) uuidString.toCharArray()[i];
       }
+
+      uuidByValue.value[36] = '\0';
    }
 }

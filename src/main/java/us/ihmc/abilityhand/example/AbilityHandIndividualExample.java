@@ -18,7 +18,14 @@ public class AbilityHandIndividualExample
       Runtime.getRuntime().addShutdownHook(new Thread(() ->
       {
          running = false;
-         bleManager.disconnect();
+         try
+         {
+            bleManager.disconnect();
+         }
+         catch (InterruptedException e)
+         {
+            e.printStackTrace();
+         }
       }));
 
       AbilityHandIndividualFingerControlCommand individualCommand = new AbilityHandIndividualFingerControlCommand();
