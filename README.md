@@ -5,6 +5,7 @@ Control the PSYONIC Ability Hand from Java using Bluetooth Low Energy.
 
 Supported platforms:
 - Linux (Ubuntu 20.04+ or similar x86_64)
+- Windows (Windows 10+ x86_64)
 
 Requires Java 17.
 ### Gradle
