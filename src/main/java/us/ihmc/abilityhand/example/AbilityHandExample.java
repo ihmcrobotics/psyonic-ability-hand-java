@@ -18,7 +18,12 @@ public class AbilityHandExample
 
       AbilityHandBLEManager bleManager = new AbilityHandBLEManager(handAddresses);
 
-      bleManager.connect();
+      int numberOfHandsConnected = bleManager.connect();
+
+      if (numberOfHandsConnected == 0)
+      {
+         System.out.println("No hands found");
+      }
 
       Runtime.getRuntime().addShutdownHook(new Thread(() ->
       {
@@ -33,7 +38,7 @@ public class AbilityHandExample
          }
       }));
 
-      while (running)
+      while (running && numberOfHandsConnected > 0)
       {
          AbilityHandLegacyGripCommand gripCommand = getRandomGripCommand();
 
@@ -47,6 +52,8 @@ public class AbilityHandExample
 
          Thread.sleep(5000);
       }
+
+      System.out.println("Exiting");
    }
 
    public static AbilityHandLegacyGripCommand getRandomGripCommand()

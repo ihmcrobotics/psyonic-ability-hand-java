@@ -2,10 +2,12 @@ package us.ihmc.abilityhand;
 
 import com.sun.jna.Pointer;
 import us.ihmc.abilityhand.ble.SimpleBLE;
-import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble;
+import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble.size_t;
 import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble.uuid_t.ByValue;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.locks.Condition;
@@ -16,7 +18,7 @@ public class AbilityHandBLEManager extends Thread
 {
    private final SimpleBLE simpleBLE = new SimpleBLE();
    private final String[] handAddresses;
-   private final Pointer[] handPeripheralPointers;
+   private final Map<String, Pointer> handAddressToPeripheralPointerMap = new HashMap<>();
    private final Queue<QueuedWriteSequence> writeSequenceQueue = new LinkedList<>();
    private final Lock lock = new ReentrantLock();
    private final Condition notEmpty = lock.newCondition();
@@ -32,7 +34,6 @@ public class AbilityHandBLEManager extends Thread
    public AbilityHandBLEManager(String[] handAddresses)
    {
       this.handAddresses = handAddresses;
-      this.handPeripheralPointers = new Pointer[handAddresses.length];
 
       running = true;
 
@@ -52,15 +53,21 @@ public class AbilityHandBLEManager extends Thread
 
       QueuedWriteSequence writeSequence = writeSequenceQueue.poll();
 
-      Pointer handPeripheralPointer = getHandPeripheralPointer(writeSequence.handAddress);
-      byte[] data = writeSequence.sequence;
-      libsimpleble.size_t dataLength = new libsimpleble.size_t(data.length);
-      ByValue serviceID = new ByValue();
-      writeUUID(serviceID, BLEUUID.ABILITY_HAND_SERVICE_ID);
-      ByValue characteristicID = new ByValue();
-      writeUUID(characteristicID, BLEUUID.ABILITY_HAND_TX_CHARACTERISTIC_ID);
+      Pointer handPeripheralPointer = handAddressToPeripheralPointerMap.get(writeSequence.handAddress);
 
-      simpleBLE.writeCommand(handPeripheralPointer, data, dataLength, serviceID, characteristicID);
+      if (handPeripheralPointer != null)
+      {
+         byte[] data = writeSequence.sequence;
+         size_t dataLength = new size_t(data.length);
+
+         ByValue serviceID = new ByValue();
+         writeUUID(serviceID, BLEUUID.ABILITY_HAND_SERVICE_ID);
+
+         ByValue characteristicID = new ByValue();
+         writeUUID(characteristicID, BLEUUID.ABILITY_HAND_TX_CHARACTERISTIC_ID);
+
+         simpleBLE.writeRequest(handPeripheralPointer, serviceID, characteristicID, data, dataLength);
+      }
 
       lock.unlock();
    }
@@ -81,9 +88,11 @@ public class AbilityHandBLEManager extends Thread
       }
    }
 
-   public void connect() throws InterruptedException
+   public int connect() throws InterruptedException
    {
       // TODO: turn adapter on
+
+      int numberOfHandsConnected = 0;
 
       Pointer adapterPointer = simpleBLE.getAdapterHandle(0);
 
@@ -101,25 +110,30 @@ public class AbilityHandBLEManager extends Thread
 
          String address = simpleBLE.getPeripheralAddress(peripheralPointer);
 
-         for (int j = 0; j < handAddresses.length; j++)
+         for (String handAddress : handAddresses)
          {
-            if (handAddresses[j].equals(address))
+            if (handAddress.equalsIgnoreCase(address))
             {
-               handPeripheralPointers[j] = peripheralPointer;
+               if (!simpleBLE.connectToPeripheral(peripheralPointer))
+               {
+                  handAddressToPeripheralPointerMap.put(handAddress, peripheralPointer);
 
-               simpleBLE.connectToPeripheral(peripheralPointer);
+                  numberOfHandsConnected++;
+               }
 
                Thread.sleep(100);
             }
          }
       }
+
+      return numberOfHandsConnected;
    }
 
    public void disconnect() throws InterruptedException
    {
-      for (int i = 0; i < handAddresses.length; i++)
+      for (String handAddress : handAddresses)
       {
-         Pointer handPeripheralPointer = handPeripheralPointers[i];
+         Pointer handPeripheralPointer = handAddressToPeripheralPointerMap.get(handAddress);
 
          if (handPeripheralPointer != null)
          {
@@ -163,22 +177,6 @@ public class AbilityHandBLEManager extends Thread
       writeSequenceQueue.offer(queuedWriteSequence);
       notEmpty.signal();
       lock.unlock();
-   }
-
-   public Pointer getHandPeripheralPointer(String handAddress)
-   {
-      int index = -1;
-
-      for (int i = 0; i < handAddresses.length; i++)
-      {
-         if (handAddresses[i].equals(handAddress))
-         {
-            index = i;
-            break;
-         }
-      }
-
-      return handPeripheralPointers[index];
    }
 
    private static void writeUUID(ByValue uuidByValue, UUID uuid)
