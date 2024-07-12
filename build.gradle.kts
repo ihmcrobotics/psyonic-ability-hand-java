@@ -37,10 +37,13 @@ publishing {
 }
 
 dependencies {
-   implementation("com.github.weliem.blessed-bluez:blessed:0.61") {
+   implementation("net.java.dev.jna:jna:5.14.0") {
       isTransitive = true
-   } // Linux Bluetooth library
-   implementation("org.jetbrains:annotations:24.0.0") {
-      isTransitive = false
+   }
+   implementation("net.java.dev.jna:jna-platform:5.14.0") {
+      isTransitive = true
+   }
+   api("us.ihmc:ihmc-native-library-loader:2.0.2") {
+      isTransitive = true
    }
 }
