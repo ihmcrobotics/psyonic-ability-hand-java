@@ -10,7 +10,7 @@ Requires Java 17.
 ### Gradle
 ```
 dependencies {
-  implementation("us.ihmc:psyonic-ability-hand-java:1.0.1")
+  implementation("us.ihmc:psyonic-ability-hand-java:1.1.0")
 }
 ```
 ### Maven
@@ -19,7 +19,7 @@ dependencies {
   <dependency>
     <groupId>us.ihmc</groupId>
     <artifactId>psyonic-ability-hand-java</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
   </dependency>
 </dependencies>
 ```
