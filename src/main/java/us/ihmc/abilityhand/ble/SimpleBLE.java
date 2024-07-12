@@ -39,7 +39,7 @@ public class SimpleBLE
       }
    }
 
-   private static OperatingSystem getOS()
+   public static OperatingSystem getOS()
    {
       if (SystemUtils.IS_OS_WINDOWS)
       {

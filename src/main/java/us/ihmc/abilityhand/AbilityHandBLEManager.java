@@ -4,6 +4,7 @@ import com.sun.jna.Pointer;
 import us.ihmc.abilityhand.ble.SimpleBLE;
 import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble.size_t;
 import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble.uuid_t.ByValue;
+import us.ihmc.tools.nativelibraries.NativeLibraryDescription.OperatingSystem;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -66,7 +67,14 @@ public class AbilityHandBLEManager extends Thread
          ByValue characteristicID = new ByValue();
          writeUUID(characteristicID, BLEUUID.ABILITY_HAND_TX_CHARACTERISTIC_ID);
 
-         simpleBLE.writeRequest(handPeripheralPointer, serviceID, characteristicID, data, dataLength);
+         if (SimpleBLE.getOS() == OperatingSystem.WIN64)
+         {
+            simpleBLE.writeRequest(handPeripheralPointer, serviceID, characteristicID, data, dataLength);
+         }
+         else if (SimpleBLE.getOS() == OperatingSystem.LINUX64)
+         {
+            simpleBLE.writeCommand(handPeripheralPointer, data, dataLength, serviceID, characteristicID);
+         }
       }
 
       lock.unlock();
@@ -114,7 +122,19 @@ public class AbilityHandBLEManager extends Thread
          {
             if (handAddress.equalsIgnoreCase(address))
             {
-               if (!simpleBLE.connectToPeripheral(peripheralPointer))
+               boolean[] connected = new boolean[1];
+
+               simpleBLE.isPeripheralConnected(peripheralPointer, connected);
+
+               // TODO: FIX
+               if (connected[0])
+               {
+                  handAddressToPeripheralPointerMap.put(handAddress, peripheralPointer);
+
+                  numberOfHandsConnected++;
+               }
+
+               else if (!simpleBLE.connectToPeripheral(peripheralPointer))
                {
                   handAddressToPeripheralPointerMap.put(handAddress, peripheralPointer);
 
@@ -138,6 +158,8 @@ public class AbilityHandBLEManager extends Thread
          if (handPeripheralPointer != null)
          {
             simpleBLE.peripheralDisconnect(handPeripheralPointer);
+
+            simpleBLE.releasePeripheral(handPeripheralPointer);
 
             Thread.sleep(100);
          }
