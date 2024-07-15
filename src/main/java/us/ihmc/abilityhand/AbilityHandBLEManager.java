@@ -4,7 +4,6 @@ import com.sun.jna.Pointer;
 import us.ihmc.abilityhand.ble.SimpleBLE;
 import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble.size_t;
 import us.ihmc.abilityhand.ble.SimpleBLE.libsimpleble.uuid_t.ByValue;
-import us.ihmc.tools.nativelibraries.NativeLibraryDescription.OperatingSystem;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -67,14 +66,7 @@ public class AbilityHandBLEManager extends Thread
          ByValue characteristicID = new ByValue();
          writeUUID(characteristicID, BLEUUID.ABILITY_HAND_TX_CHARACTERISTIC_ID);
 
-         if (SimpleBLE.getOS() == OperatingSystem.WIN64)
-         {
-            simpleBLE.writeRequest(handPeripheralPointer, serviceID, characteristicID, data, dataLength);
-         }
-         else if (SimpleBLE.getOS() == OperatingSystem.LINUX64)
-         {
-            simpleBLE.writeCommand(handPeripheralPointer, data, dataLength, serviceID, characteristicID);
-         }
+         simpleBLE.writeCommand(handPeripheralPointer, serviceID, characteristicID, data, dataLength);
       }
 
       lock.unlock();

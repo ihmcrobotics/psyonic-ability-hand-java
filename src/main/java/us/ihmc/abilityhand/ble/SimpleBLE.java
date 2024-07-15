@@ -97,9 +97,9 @@ public class SimpleBLE
 
       boolean simpleble_peripheral_connect(Pointer handle);
 
-      boolean simpleble_peripheral_write_command(Pointer handle, byte[] data, size_t length, uuid_t.ByValue service, uuid_t.ByValue characteristic);
+      boolean simpleble_peripheral_write_command(Pointer handle, uuid_t.ByValue service, uuid_t.ByValue characteristic, byte[] data, size_t length);
 
-      boolean simpleble_peripheral_write_request(Pointer handle, uuid_t service, uuid_t characteristic, byte[] data, size_t length);
+      boolean simpleble_peripheral_write_request(Pointer handle, uuid_t.ByValue service, uuid_t.ByValue characteristic, byte[] data, size_t length);
 
       boolean simpleble_peripheral_services_get(Pointer handle, int index, service_t services);
 
@@ -286,17 +286,17 @@ public class SimpleBLE
    }
 
    public boolean writeCommand(Pointer peripheralHandle,
-                               byte[] data,
-                               libsimpleble.size_t length,
                                libsimpleble.uuid_t.ByValue serviceUuid,
-                               libsimpleble.uuid_t.ByValue characteristicUuid)
+                               libsimpleble.uuid_t.ByValue characteristicUuid,
+                               byte[] data,
+                               libsimpleble.size_t length)
    {
-      return libsimpleble.INSTANCE.simpleble_peripheral_write_command(peripheralHandle, data, length, serviceUuid, characteristicUuid);
+      return libsimpleble.INSTANCE.simpleble_peripheral_write_command(peripheralHandle, serviceUuid, characteristicUuid, data, length);
    }
 
    public boolean writeRequest(Pointer peripheralHandle,
-                               libsimpleble.uuid_t serviceUuid,
-                               libsimpleble.uuid_t characteristicUuid,
+                               libsimpleble.uuid_t.ByValue serviceUuid,
+                               libsimpleble.uuid_t.ByValue characteristicUuid,
                                byte[] data,
                                libsimpleble.size_t length)
    {
