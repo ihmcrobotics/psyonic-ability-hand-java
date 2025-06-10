@@ -8,7 +8,10 @@ version = "1.1.1"
 
 repositories {
    mavenCentral()
-   maven { url = uri("https://jitpack.io") }
+}
+
+java {
+   withSourcesJar()
 }
 
 publishing {
@@ -37,13 +40,15 @@ publishing {
 }
 
 dependencies {
-   implementation("net.java.dev.jna:jna:5.14.0") {
+   // Transitive dependencies
+   api("us.ihmc:javacpp:1.5.11-ihmc-2") {
       isTransitive = true
    }
-   implementation("net.java.dev.jna:jna-platform:5.14.0") {
+   api("us.ihmc:ihmc-native-library-loader:2.0.4") {
       isTransitive = true
    }
-   api("us.ihmc:ihmc-native-library-loader:2.0.2") {
-      isTransitive = true
-   }
+}
+
+tasks.test {
+   useJUnitPlatform()
 }
