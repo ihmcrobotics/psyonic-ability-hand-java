@@ -3,6 +3,7 @@ package us.ihmc.abilityhand.samples;
 import us.ihmc.abilityhand.AHWrapper;
 import us.ihmc.abilityhand.FloatArray6;
 import us.ihmc.abilityhand.global.abilityhand;
+import us.ihmc.abilityhand.library.AbilityHandAPINativeLibrary;
 
 import java.time.Instant;
 
@@ -10,6 +11,9 @@ public class HandWave
 {
    public static void main(String[] args)
    {
+      boolean loaded = AbilityHandAPINativeLibrary.load();
+      assert loaded;
+
       AHWrapper wrapper = new AHWrapper((byte) 0x50, 921600);
       wrapper.connect();
 

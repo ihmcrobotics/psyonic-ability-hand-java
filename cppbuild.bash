@@ -46,3 +46,6 @@ mkdir -p ../src/main/resources/abilityhand/native/windows-x86_64/
 if [ -f "javainstall/jniabilityhand.dll" ]; then
   cp javainstall/jniabilityhand.dll ../src/main/resources/abilityhand/native/windows-x86_64/
 fi
+if [ -f "install/lib/ability_hand_api.dll" ]; then
+  cp install/lib/ability_hand_api.dll ../src/main/resources/abilityhand/native/windows-x86_64/
+fi

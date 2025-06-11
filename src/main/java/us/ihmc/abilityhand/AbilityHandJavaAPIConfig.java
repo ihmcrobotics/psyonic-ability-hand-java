@@ -11,7 +11,8 @@ import org.bytedeco.javacpp.tools.InfoMapper;
             include = {"wrapper.h", "hand.h"},
             includepath = "install/include",
             link = "ability_hand_api",
-            linkpath = "install/lib"
+            linkpath = "install/lib",
+            preload = "jniabilityhand"
       )},
       target = "us.ihmc.abilityhand",
       global = "us.ihmc.abilityhand.global.abilityhand"
