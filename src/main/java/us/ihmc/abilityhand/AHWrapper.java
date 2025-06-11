@@ -18,9 +18,9 @@ public class AHWrapper extends Pointer {
   public AHWrapper(@Cast("const uint8_t") byte hand_addr, @Cast("const uint32_t") int b_rate) { super((Pointer)null); allocate(hand_addr, b_rate); }
   private native void allocate(@Cast("const uint8_t") byte hand_addr, @Cast("const uint32_t") int b_rate);
   public native int connect();
-  public native int read_write_once(@Const @ByRef std::array<float,6> cmd_values,
+  public native int read_write_once(@Const @ByRef FloatArray6 cmd_values,
                         @Cast("const Command") int cmd, @Cast("const uint8_t") byte reply_mode);
-  public native @ByRef Hand hand(); public native AHWrapper hand(Hand setter);
+  public native @MemberGetter @Const @ByRef Hand hand();
   public native @Cast("size_t") long n_reads(); public native AHWrapper n_reads(long setter);
   public native @Cast("size_t") long n_writes(); public native AHWrapper n_writes(long setter);
 }

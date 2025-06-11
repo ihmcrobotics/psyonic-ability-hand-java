@@ -17,7 +17,7 @@ if [ "$(uname)" == "Linux" ]; then
   # TODO
   echo "TODO"
 else # Winows
-  cmake ..
+  cmake .. -Wno-dev
 fi
 
 popd
@@ -34,10 +34,10 @@ fi
 
 java -cp "javacpp.jar" org.bytedeco.javacpp.tools.Builder us/ihmc/abilityhand/AbilityHandJavaAPIConfig.java
 cp us/ihmc/abilityhand/*.java ../src/main/java/us/ihmc/abilityhand/
-cp us/ihmc/abilityhand/global/*.java ../src/main/us/ihmc/abilityhand/global/
+cp us/ihmc/abilityhand/global/*.java ../src/main/java/us/ihmc/abilityhand/global/
 
 #### JNI compilation ####
-java -cp "javacpp.jar" org.bytedeco.javacpp.tools.Builder us/ihmc/abilityhand/*.java us/ihmc/abilithand/*.java -d javainstall
+java -cp "javacpp.jar" org.bytedeco.javacpp.tools.Builder us/ihmc/abilityhand/*.java us/ihmc/abilityhand/*.java -d javainstall
 
 ##### Copy shared libs to resources ####
 # TODO
