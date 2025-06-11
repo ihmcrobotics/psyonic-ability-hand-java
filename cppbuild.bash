@@ -1,29 +1,29 @@
 #!/bin/bash
 # This build script is designed to work on Linux and Windows. For Windows, run from a bash shell launched with launchBashWindows.bat
 
-pushd .
+BASE_DIR=$(pwd)
+
 mkdir cppbuild
 cd cppbuild
 
+# Clone the ability-hand-api repo, if it's not already here
 if [ ! -d ability-hand-api ]; then
   git clone https://github.com/psyonicinc/ability-hand-api.git ability-hand-api
 fi
 
 cd ability-hand-api/cpp
+
+# Replace CMakeLists.txt with one that installs the API as a library
+cp -f $BASE_DIR/patches/CMakeLists.txt .
+
+# Build the API and install the library
 mkdir build
 cd build
-
-if [ "$(uname)" == "Linux" ]; then
-  # TODO
-  echo "TODO"
-else # Winows
-  cmake .. -Wno-dev
-fi
-
-popd
+cmake -Dinstall_dir=$BASE_DIR/cppbuild/install/ ..
+cmake --build . --config Release --target install
 
 ### Java generation ####
-cd cppbuild
+cd $BASE_DIR/cppbuild
 cp -r ../src/main/java/* .
 
 JAVACPP_VERSION=1.5.11
@@ -40,4 +40,9 @@ cp us/ihmc/abilityhand/global/*.java ../src/main/java/us/ihmc/abilityhand/global
 java -cp "javacpp.jar" org.bytedeco.javacpp.tools.Builder us/ihmc/abilityhand/*.java us/ihmc/abilityhand/*.java -d javainstall
 
 ##### Copy shared libs to resources ####
-# TODO
+# TODO: Linux
+# Windows
+mkdir -p ../src/main/resources/abilityhand/native/windows-x86_64/
+if [ -f "javainstall/jniabilityhand.dll" ]; then
+  cp javainstall/jniabilityhand.dll ../src/main/resources/abilityhand/native/windows-x86_64/
+fi

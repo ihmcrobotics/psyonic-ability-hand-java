@@ -9,7 +9,9 @@ import org.bytedeco.javacpp.tools.InfoMapper;
 @Properties(value = {
       @Platform(
             include = {"wrapper.h", "hand.h"},
-            includepath = "C:/Users/tbialek/Projects/psyonic-ability-hand-java/cppbuild/ability-hand-api/cpp/ah_wrapper/include"
+            includepath = "install/include",
+            link = "ability_hand_api",
+            linkpath = "install/lib"
       )
 },
       target = "us.ihmc.abilityhand",
