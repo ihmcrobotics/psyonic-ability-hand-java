@@ -12,22 +12,20 @@ import org.bytedeco.javacpp.tools.InfoMapper;
             includepath = "install/include",
             link = "ability_hand_api",
             linkpath = "install/lib"
-      )
-},
+      )},
       target = "us.ihmc.abilityhand",
       global = "us.ihmc.abilityhand.global.abilityhand"
 )
 
 public class AbilityHandJavaAPIConfig implements InfoMapper
 {
-
-      @Override
-      public void map(InfoMap infoMap)
-      {
-            infoMap.put(new Info("std::array<float,6>").pointerTypes("FloatArray6").define())
-                   .put(new Info("std::array<uint16_t,30>").pointerTypes("UInt16Array30").define())
-                   // Hand field of AHWrapper is read-only. Code adapted from here:
-                   // https://github.com/bytedeco/javacpp/wiki/Mapping-Recipes#mapping-a-declaration-to-custom-code
-                   .put(new Info("AHWrapper::hand").javaText("public native @MemberGetter @Const @ByRef Hand hand();"));
-      }
+   @Override
+   public void map(InfoMap infoMap)
+   {
+      infoMap.put(new Info("std::array<float,6>").pointerTypes("FloatArray6").define())
+             .put(new Info("std::array<uint16_t,30>").pointerTypes("UInt16Array30").define())
+             // Hand field of AHWrapper is read-only. Code adapted from here:
+             // https://github.com/bytedeco/javacpp/wiki/Mapping-Recipes#mapping-a-declaration-to-custom-code
+             .put(new Info("AHWrapper::hand").javaText("public native @MemberGetter @Const @ByRef Hand hand();"));
+   }
 }
