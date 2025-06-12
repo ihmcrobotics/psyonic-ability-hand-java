@@ -11,10 +11,10 @@ import org.bytedeco.javacpp.annotation.*;
 public class abilityhand extends us.ihmc.abilityhand.AbilityHandJavaAPIConfig {
     static { Loader.load(); }
 
-// Targeting ..\FloatArray6.java
+// Targeting ../FloatArray6.java
 
 
-// Targeting ..\UInt16Array30.java
+// Targeting ../UInt16Array30.java
 
 
 // Parsed from wrapper.h
@@ -36,7 +36,7 @@ public class abilityhand extends us.ihmc.abilityhand.AbilityHandJavaAPIConfig {
 
 /** enum Command */
 public static final int POSITION = 0, VELOCITY = 1, CURRENT = 2, DUTY = 3;
-// Targeting ..\AHWrapper.java
+// Targeting ../AHWrapper.java
 
 
 
@@ -45,7 +45,7 @@ public static final int POSITION = 0, VELOCITY = 1, CURRENT = 2, DUTY = 3;
 // #pragma once
 // #include <array>
 // #include <cstdint>
-// Targeting ..\Hand.java
+// Targeting ../Hand.java
 
 
 

@@ -14,7 +14,8 @@ public class AbilityHandAPINativeLibrary implements NativeLibraryDescription
          case x64 -> switch (os)
          {
             case WIN64 -> "windows-x86_64";
-            case LINUX64, MACOSX64 -> throw new RuntimeException("Unsupported platform");
+            case LINUX64 -> "linux-x86_64";
+            case MACOSX64 -> throw new RuntimeException("Unsupported platform");
          };
          case arm64 -> throw new RuntimeException("Unsupported platform");
       };
@@ -28,7 +29,8 @@ public class AbilityHandAPINativeLibrary implements NativeLibraryDescription
       return switch (os)
       {
          case WIN64 -> NativeLibraryWithDependencies.fromFilename("jniabilityhand.dll", "ability_hand_api.dll");
-         case LINUX64, MACOSX64 -> throw new RuntimeException("Unsupported platform");
+         case LINUX64 -> NativeLibraryWithDependencies.fromFilename("libjniabilityhand.so", "libability_hand_api.so");
+         case MACOSX64 -> throw new RuntimeException("Unsupported platform");
       };
    }
 

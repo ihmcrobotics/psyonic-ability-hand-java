@@ -40,7 +40,14 @@ cp us/ihmc/abilityhand/global/*.java ../src/main/java/us/ihmc/abilityhand/global
 java -cp "javacpp.jar" org.bytedeco.javacpp.tools.Builder us/ihmc/abilityhand/*.java us/ihmc/abilityhand/*.java -d javainstall
 
 ##### Copy shared libs to resources ####
-# TODO: Linux
+# Linux
+mkdir -p ../src/main/resources/abilityhand/native/linux-x86_64/
+if [ -f "javainstall/libjniabilityhand.so" ]; then
+  cp javainstall/libjniabilityhand.so ../src/main/resources/abilityhand/native/linux-x86_64/
+fi
+if [ -f "install/lib/libability_hand_api.so" ]; then
+  cp install/lib/libability_hand_api.so ../src/main/resources/abilityhand/native/linux-x86_64/
+fi
 # Windows
 mkdir -p ../src/main/resources/abilityhand/native/windows-x86_64/
 if [ -f "javainstall/jniabilityhand.dll" ]; then
