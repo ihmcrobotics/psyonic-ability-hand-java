@@ -12,10 +12,9 @@ public class SplitHandWave
       // Library must be loaded before use
       boolean loaded = AbilityHandAPINativeLibrary.load();
       assert loaded;
-      float old = 0.0f;
 
       // Initialize wrapper and connect
-      AHWrapper wrapper = new AHWrapper((byte) 0x50, 1000000);
+      AHWrapper wrapper = new AHWrapper((byte) 0x50, 460800);
       wrapper.connect();
 
       // Initialize the command
@@ -35,28 +34,23 @@ public class SplitHandWave
          }
          command.put(5, -command.get(5));
 
-         // Write to the hand (also reads)
+         // Write to the hand
          wrapper.write_once(command, abilityhand.POSITION, (byte) 0);
-         int j = 0;
+
+         // Read the hand's reply
          boolean read = false;
-         try {
-            Thread.sleep(1);
-         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-         }
-         while(j < 30 && !read)
+         for (int j = 0; j < 10000 && !read; ++j)
          {
             read = wrapper.read_once((byte) 0);
-            ++j;
          }
-         if(old != wrapper.hand().pos().get(0))
+
+         if (read)
          {
-            System.out.println(
-                  "Hand position: " + wrapper.hand().pos().get(0) + " " + wrapper.hand().pos().get(1) + " " + wrapper.hand().pos().get(2) + " " +
-                  wrapper.hand().pos().get(3) + " " + wrapper.hand().pos().get(4) + " " + wrapper.hand().pos().get(5));
-            old = wrapper.hand().pos().get(0);
+            System.out.println("Hand position: " + wrapper.hand().pos().get(0) + " " + wrapper.hand().pos().get(1) + " " + wrapper.hand().pos().get(2) + " "
+                               + wrapper.hand().pos().get(3) + " " + wrapper.hand().pos().get(4) + " " + wrapper.hand().pos().get(5));
          }
       }
 
+      wrapper.close();
    }
 }
