@@ -20,6 +20,9 @@ public class AHWrapper extends Pointer {
   public native int connect();
   public native int read_write_once(@Const @ByRef FloatArray6 cmd_values,
                         @Cast("const Command") int cmd, @Cast("const uint8_t") byte reply_mode);
+  public native int write_once(@Const @ByRef FloatArray6 cmd_values,
+                   @Cast("Command") int cmd, @Cast("uint8_t") byte reply_mode);
+  public native @Cast("bool") boolean read_once(@Cast("uint8_t") byte reply_mode);
   public native @MemberGetter @Const @ByRef Hand hand();
   public native @Cast("size_t") long n_reads(); public native AHWrapper n_reads(long setter);
   public native @Cast("size_t") long n_writes(); public native AHWrapper n_writes(long setter);
