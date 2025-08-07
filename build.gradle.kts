@@ -4,9 +4,9 @@ plugins {
 
 ihmc {
    group = "us.ihmc"
-   version = "1.1.1"
+   version = "1.1.2"
    vcsUrl = "https://github.com/ihmcrobotics/psyonic-ability-hand-java"
-   openSource = false
+   openSource = true
 
    configureDependencyResolution()
    configurePublications()
