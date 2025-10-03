@@ -17,7 +17,7 @@ public class AbilityHandAPINativeLibrary implements NativeLibraryDescription
             case LINUX64 -> "linux-x86_64";
             case MACOSX64 -> throw new RuntimeException("Unsupported platform");
          };
-         case arm64 -> throw new RuntimeException("Unsupported platform");
+         case arm, arm64 -> throw new RuntimeException("Unsupported platform");
       };
 
       return "abilityhand.native." + archPackage;
