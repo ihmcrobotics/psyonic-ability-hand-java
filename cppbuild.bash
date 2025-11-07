@@ -8,7 +8,7 @@ cd cppbuild
 
 # Clone the ability-hand-api repo, if it's not already here
 if [ ! -d ability-hand-api ]; then
-  git clone https://github.com/ihmcrobotics/ability-hand-api.git ability-hand-api
+  git clone -b split-read-write-v2 https://github.com/ihmcrobotics/ability-hand-api.git ability-hand-api
 fi
 
 cd ability-hand-api/cpp
