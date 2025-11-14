@@ -15,7 +15,7 @@ public class HandWave
 
       // Initialize wrapper and connect
       AHWrapper wrapper = new AHWrapper((byte) 0x50, 460800);
-      wrapper.connect();
+      wrapper.connect("");
 
       // Initialize the command
       FloatArray6 command = new FloatArray6();

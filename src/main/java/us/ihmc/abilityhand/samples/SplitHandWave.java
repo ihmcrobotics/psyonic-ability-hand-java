@@ -15,7 +15,7 @@ public class SplitHandWave
 
       // Initialize wrapper and connect
       AHWrapper wrapper = new AHWrapper((byte) 0x50, 460800);
-      wrapper.connect();
+      wrapper.connect("");
 
       // Initialize the command
       FloatArray6 command = new FloatArray6();
@@ -35,19 +35,23 @@ public class SplitHandWave
          command.put(5, -command.get(5));
 
          // Write to the hand
-         wrapper.write_once(command, abilityhand.POSITION, (byte) 0);
+         wrapper.write(command, abilityhand.POSITION, (byte) 0);
 
          // Read the hand's reply
-         boolean read = false;
-         for (int j = 0; j < 10000 && !read; ++j)
+         int result = -1;
+         for (int j = 0; j < 10000 && result < 0; ++j)
          {
-            read = wrapper.read_once((byte) 0);
+            result = wrapper.read((byte) 0);
          }
 
-         if (read)
+         if (result > 0)
          {
             System.out.println("Hand position: " + wrapper.hand().pos().get(0) + " " + wrapper.hand().pos().get(1) + " " + wrapper.hand().pos().get(2) + " "
                                + wrapper.hand().pos().get(3) + " " + wrapper.hand().pos().get(4) + " " + wrapper.hand().pos().get(5));
+         }
+         else if (result == 0)
+         {
+            System.out.println("Checksum failed");
          }
       }
 
