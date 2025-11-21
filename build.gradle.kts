@@ -4,7 +4,7 @@ plugins {
 
 ihmc {
    group = "us.ihmc"
-   version = "1.1.3"
+   version = "1.1.4"
    vcsUrl = "https://github.com/ihmcrobotics/psyonic-ability-hand-java"
    openSource = true
 
