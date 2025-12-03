@@ -25,11 +25,7 @@ public class abilityhand extends us.ihmc.abilityhand.AbilityHandJavaAPIConfig {
 
 // #include "hand.h"
 // #include "ppp.h"
-// #ifdef PLATFORM_WINDOWS
-// #include "winserial.h"
-// #elif defined(PLATFORM_LINUX)
 // #include "linux_serial.h"
-// #endif
 
 @MemberGetter public static native @Cast("const uint16_t") short BUFFER_SIZE();
 @MemberGetter public static native @Cast("const uint16_t") short STUFFED_BUFFER_SIZE();
@@ -37,6 +33,7 @@ public class abilityhand extends us.ihmc.abilityhand.AbilityHandJavaAPIConfig {
 /** enum Command */
 public static final int POSITION = 0, VELOCITY = 1, CURRENT = 2, DUTY = 3;
 // Targeting ../AHWrapper.java
+
 
 
 
