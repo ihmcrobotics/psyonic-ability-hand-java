@@ -13,6 +13,14 @@ import org.bytedeco.javacpp.tools.InfoMapper;
             link = "ability_hand_api",
             linkpath = "install/lib",
             preload = "jniabilityhand"
+      ),
+      @Platform(
+            value = "linux",
+            define = "PLATFORM_LINUX"
+      ),
+      @Platform(
+            value = "windows",
+            define = "PLATFORM_WINDOWS"
       )},
       target = "us.ihmc.abilityhand",
       global = "us.ihmc.abilityhand.global.abilityhand"
@@ -27,6 +35,7 @@ public class AbilityHandJavaAPIConfig implements InfoMapper
              .put(new Info("std::array<uint16_t,30>").pointerTypes("UInt16Array30").define())
              // Hand field of AHWrapper is read-only. Code adapted from here:
              // https://github.com/bytedeco/javacpp/wiki/Mapping-Recipes#mapping-a-declaration-to-custom-code
-             .put(new Info("AHWrapper::hand").javaText("public native @MemberGetter @Const @ByRef Hand hand();"));
+             .put(new Info("AHWrapper::hand").javaText("public native @MemberGetter @Const @ByRef Hand hand();"))
+             .put(new Info("AHSerial").skip());
    }
 }
